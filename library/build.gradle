@@ -6,6 +6,7 @@ android {
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         consumerProguardFiles 'proguard-rules.pro'
     }
 }
@@ -16,5 +17,3 @@ dependencies {
     compile 'nl.qbusict:cupboard:2.2.0'
     compile "com.android.support:design:$supportLibVersion"
 }
-
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

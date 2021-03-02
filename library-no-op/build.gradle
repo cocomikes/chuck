@@ -6,11 +6,10 @@ android {
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
     }
 }
 
 dependencies {
     compile "com.squareup.okhttp3:okhttp:$okhttp3Version"
 }
-
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
