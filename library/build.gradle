@@ -12,8 +12,7 @@ android {
 }
 
 dependencies {
-    compile 'com.google.code.gson:gson:2.8.0'
-    compile "com.squareup.okhttp3:okhttp:$okhttp3Version"
-    compile 'nl.qbusict:cupboard:2.2.0'
-    compile "com.android.support:design:$supportLibVersion"
+    compileOnly('com.google.code.gson:gson:2.8.7')
+    compileOnly("com.squareup.okhttp3:okhttp:$okhttp3Version")
+    api('nl.qbusict:cupboard:2.2.0')
 }
