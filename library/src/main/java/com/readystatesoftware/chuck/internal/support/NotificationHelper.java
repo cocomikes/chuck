@@ -21,10 +21,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.LongSparseArray;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 import com.readystatesoftware.chuck.Chuck;
 import com.readystatesoftware.chuck.R;
@@ -90,10 +91,13 @@ public class NotificationHelper {
             int count = 0;
             for (int i = transactionBuffer.size() - 1; i >= 0; i--) {
                 if (count < BUFFER_SIZE) {
-                    if (count == 0) {
-                        builder.setContentText(transactionBuffer.valueAt(i).getNotificationText());
+                    HttpTransaction buffer = transactionBuffer.valueAt(i);
+                    if(buffer != null){
+                        if (count == 0) {
+                            builder.setContentText(buffer.getNotificationText());
+                        }
+                        inboxStyle.addLine(buffer.getNotificationText());
                     }
-                    inboxStyle.addLine(transactionBuffer.valueAt(i).getNotificationText());
                 }
                 count++;
             }
