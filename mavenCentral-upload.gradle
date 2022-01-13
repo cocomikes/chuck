@@ -1,0 +1,173 @@
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+// 配置上传到maven仓库
+apply plugin: 'maven'
+
+ext["PUBLISH_GROUP_ID"] = "io.github.cocomikes"
+ext["keyId"] = ""
+ext["password"] = ""
+ext["secretKeyRingFile"] = ""
+ext["ossrhUsername"] = ""
+ext["ossrhPassword"] = ""
+ext["PUBLISH_PACHAGE"] = "aar"
+
+File secretPropsFile = project.rootProject.file('mavenCentral.properties')
+if (secretPropsFile.exists()) {
+    println "Found secret props file, loading props"
+    Properties p = new Properties()
+    p.load(new FileInputStream(secretPropsFile))
+    p.each { name, value ->
+        ext[name] = value
+    }
+} else {
+    println "No props file, loading env vars"
+}
+
+def dokkaTask = [:]
+ext.dokkaTask = dokkaTask
+
+def useDokkaTask(Task task) {
+    ext.dokkaTask.task = task
+}
+
+ext.useDokkaTask = this.&useDokkaTask
+
+// 指定编码
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+// 打包源码
+task generateSourcesJar(type: Jar) {
+    group = 'jar'
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+// 制作文档(Javadoc)
+task javadoc(type: Javadoc) {
+    failOnError  false
+    source = android.sourceSets.main.java.srcDirs
+    options.encoding = "UTF-8"
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+if(dokkaTask.task != null){
+    task generateJavadoc(type: Jar, dependsOn: dokkaTask.task) {
+        group = 'jar'
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+} else{
+    task generateJavadoc(type: Jar, dependsOn: javadoc) {
+        group = 'jar'
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+}
+
+artifacts {
+    archives generateJavadoc
+    archives generateSourcesJar
+}
+
+// 打包源码
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    archiveClassifier = "sources"
+}
+
+publishing{
+    publications {
+        mavenCentral(MavenPublication) {
+            // The coordinates of the library, being set from variables that
+            // we'll set up in a moment
+            groupId PUBLISH_GROUP_ID
+            artifactId ARTIFACT_ID
+            version PUBLISH_VERSION
+
+            pom.packaging = PUBLISH_PACHAGE
+            // Two artifacts, the `aar` and the sources
+            artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
+            artifact sourcesJar
+
+            // Self-explanatory metadata for the most part
+            pom {
+                name = ARTIFACT_ID
+                description = 'library tools for mikes usage'
+                // If your project has a dedicated site, use its URL here
+                url = 'https://github.com/cocomikes/chuck'
+                licenses {
+                    license {
+                        //协议类型，一般默认Apache License2.0的话不用改：
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'mikes_2012'
+                        name = 'mikes'
+                        email = 'mikes_2012@163.com'
+                    }
+                }
+                // Version control info, if you're using GitHub, follow the format as seen here
+                scm {
+                    //修改成你的Git地址：
+                    connection = 'git@github.com:cocomikes/chuck.git'
+                    developerConnection = 'git@github.com:cocomikes/chuck.git'
+                    //分支地址：
+                    url = 'https://github.com/cocomikes/chuck/tree/master'
+                }
+                // A slightly hacky fix so that your POM will include any transitive dependencies
+                // that your library builds upon
+                withXml {
+                    def dependenciesNode = asNode().appendNode('dependencies')
+
+                    project.configurations.implementation.allDependencies.each {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', it.group)
+                        dependencyNode.appendNode('artifactId', it.name)
+                        dependencyNode.appendNode('version', it.version)
+                    }
+                }
+            }
+        }
+    }
+
+    repositories {
+        // The repository to publish to, Sonatype/MavenCentral
+        maven {
+            // This is an arbitrary name, you may also use "mavencentral" or
+            // any other name that's descriptive for you
+            name = "mavenCentral"
+
+            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            // You only need this if you want to publish snapshots, otherwise just set the URL
+            // to the release repo directly
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
+            // The username and password we've fetched earlier
+            credentials {
+                username ossrhUsername
+                password ossrhPassword
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenCentral
+}
+
+//生成本地arr,jar
+uploadArchives{
+    repositories.mavenDeployer{
+        // 配置本地仓库路径，项目根目录下的repository目录中
+        repository(url: uri('./repository'))
+        pom.groupId = PUBLISH_GROUP_ID
+        pom.artifactId = ARTIFACT_ID
+        pom.version = PUBLISH_VERSION
+    }
+}

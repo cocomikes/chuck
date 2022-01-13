@@ -21,9 +21,18 @@ Setup
 Add the dependency in your `build.gradle` file. Add it alongside the `no-op` variant to isolate Chuck from release builds as follows:
 
 ```gradle
+allprojects {
+    repositories {
+        maven { url "https://repo1.maven.org/maven2/" }
+    }
+}
+
  dependencies {
-   debugApi 'com.github.cocomikes.chuck:library:1.2.0'
-   releaseApi 'com.github.cocomikes.chuck:library-no-op:1.2.0'
+   debugApi 'io.github.cocomikes:chuck-library:1.3.0'
+   releaseApi 'io.github.cocomikes:chuck-library-no-op:1.3.0'
+   
+   //debugApi 'com.github.cocomikes.chuck:library:1.2.0'
+   //releaseApi 'com.github.cocomikes.chuck:library-no-op:1.2.0'
  }
 ```
 

@@ -1,5 +1,9 @@
 apply plugin: 'com.android.library'
 
+def versionMajor = 1
+def versionMinor = 3
+def versionPatch = 0
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -7,6 +11,8 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode versionMajor * 100 + versionMinor * 10 + versionPatch
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
     }
 
     compileOptions {
@@ -18,3 +24,9 @@ android {
 dependencies {
     compileOnly("com.squareup.okhttp3:okhttp:$okhttp3Version")
 }
+
+ext {
+    ARTIFACT_ID = 'chuck-library-no-op' //项目名称
+    PUBLISH_VERSION = android.defaultConfig.versionName//版本号
+}
+apply from: "../mavenCentral-upload.gradle"
