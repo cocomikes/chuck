@@ -25,8 +25,8 @@ dependencies {
     compileOnly("com.squareup.okhttp3:okhttp:$okhttp3Version")
 }
 
-ext {
-    ARTIFACT_ID = 'chuck-library-no-op' //项目名称
-    PUBLISH_VERSION = android.defaultConfig.versionName//版本号
-}
-apply from: "../mavenCentral-upload.gradle"
+//ext {
+//    ARTIFACT_ID = 'chuck-library-no-op' //项目名称
+//    PUBLISH_VERSION = android.defaultConfig.versionName//版本号
+//}
+//apply from: "../mavenCentral-upload.gradle"

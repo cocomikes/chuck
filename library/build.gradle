@@ -32,8 +32,8 @@ dependencies {
     api('nl.qbusict:cupboard:2.2.0')
 }
 
-ext {
-    ARTIFACT_ID = 'chuck-library' //项目名称
-    PUBLISH_VERSION = android.defaultConfig.versionName//版本号
-}
-apply from: "../mavenCentral-upload.gradle"
+//ext {
+//    ARTIFACT_ID = 'chuck-library' //项目名称
+//    PUBLISH_VERSION = android.defaultConfig.versionName//版本号
+//}
+//apply from: "../mavenCentral-upload.gradle"
