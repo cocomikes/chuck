@@ -121,7 +121,9 @@ public class TransactionActivity extends BaseChuckActivity implements LoaderMana
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         CursorLoader loader = new CursorLoader(this);
-        loader.setUri(ContentUris.withAppendedId(ChuckContentProvider.TRANSACTION_URI, transactionId));
+        if(ChuckContentProvider.TRANSACTION_URI != null){
+            loader.setUri(ContentUris.withAppendedId(ChuckContentProvider.TRANSACTION_URI, transactionId));
+        }
         return loader;
     }
 

@@ -55,9 +55,11 @@ public class RetentionManager {
     }
 
     private void deleteSince(long threshold) {
-        int rows = context.getContentResolver().delete(ChuckContentProvider.TRANSACTION_URI,
-                "requestDate <= ?", new String[] { String.valueOf(threshold) });
-        Log.i(LOG_TAG, rows + " transactions deleted");
+        if(ChuckContentProvider.TRANSACTION_URI != null){
+            int rows = context.getContentResolver().delete(ChuckContentProvider.TRANSACTION_URI,
+                    "requestDate <= ?", new String[] { String.valueOf(threshold) });
+            Log.i(LOG_TAG, rows + " transactions deleted");
+        }
     }
 
     private boolean isCleanupDue(long now) {

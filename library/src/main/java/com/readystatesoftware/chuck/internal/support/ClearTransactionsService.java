@@ -15,9 +15,11 @@ public class ClearTransactionsService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        getContentResolver().delete(ChuckContentProvider.TRANSACTION_URI, null, null);
-        NotificationHelper.clearBuffer();
-        NotificationHelper notificationHelper = new NotificationHelper(this);
-        notificationHelper.dismiss();
+        if(ChuckContentProvider.TRANSACTION_URI != null){
+            getContentResolver().delete(ChuckContentProvider.TRANSACTION_URI, null, null);
+            NotificationHelper.clearBuffer();
+            NotificationHelper notificationHelper = new NotificationHelper(this);
+            notificationHelper.dismiss();
+        }
     }
 }

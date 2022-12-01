@@ -127,97 +127,103 @@ public final class ChuckInterceptor implements Interceptor {
 
     @Override public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
-
-        RequestBody requestBody = request.body();
-        boolean hasRequestBody = requestBody != null;
-
-        HttpTransaction transaction = new HttpTransaction();
-        transaction.setRequestDate(new Date());
-
-        transaction.setMethod(request.method());
-        transaction.setUrl(request.url().toString());
-
-        transaction.setRequestHeaders(request.headers());
-        if (hasRequestBody) {
-            if (requestBody.contentType() != null) {
-                transaction.setRequestContentType(requestBody.contentType().toString());
+        try{
+            if(ChuckContentProvider.TRANSACTION_URI == null){
+                throw new IllegalStateException("chuck Uri is Null.");
             }
-            if (requestBody.contentLength() != -1) {
-                transaction.setRequestContentLength(requestBody.contentLength());
-            }
-        }
+            RequestBody requestBody = request.body();
+            boolean hasRequestBody = requestBody != null;
 
-        transaction.setRequestBodyIsPlainText(!bodyHasUnsupportedEncoding(request.headers()));
-        if (hasRequestBody && transaction.requestBodyIsPlainText()) {
-            BufferedSource source = getNativeSource(new Buffer(), bodyGzipped(request.headers()));
-            Buffer buffer = source.buffer();
-            requestBody.writeTo(buffer);
-            Charset charset = UTF8;
-            MediaType contentType = requestBody.contentType();
-            if (contentType != null) {
-                charset = contentType.charset(UTF8);
-            }
-            if (isPlaintext(buffer)) {
-                transaction.setRequestBody(readFromBuffer(buffer, charset));
-            } else {
-                transaction.setResponseBodyIsPlainText(false);
-            }
-        }
+            HttpTransaction transaction = new HttpTransaction();
+            transaction.setRequestDate(new Date());
 
-        Uri transactionUri = create(transaction);
+            transaction.setMethod(request.method());
+            transaction.setUrl(request.url().toString());
 
-        long startNs = System.nanoTime();
-        Response response;
-        try {
-            response = chain.proceed(request);
-        } catch (Exception e) {
-            transaction.setError(e.toString());
-            update(transaction, transactionUri);
-            throw e;
-        }
-        long tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs);
-
-        ResponseBody responseBody = response.body();
-
-        transaction.setRequestHeaders(response.request().headers()); // includes headers added later in the chain
-        transaction.setResponseDate(new Date());
-        transaction.setTookMs(tookMs);
-        transaction.setProtocol(response.protocol().toString());
-        transaction.setResponseCode(response.code());
-        transaction.setResponseMessage(response.message());
-
-        transaction.setResponseContentLength(responseBody.contentLength());
-        if (responseBody.contentType() != null) {
-            transaction.setResponseContentType(responseBody.contentType().toString());
-        }
-        transaction.setResponseHeaders(response.headers());
-
-        transaction.setResponseBodyIsPlainText(!bodyHasUnsupportedEncoding(response.headers()));
-        if (HttpHeaders.hasBody(response) && transaction.responseBodyIsPlainText()) {
-            BufferedSource source = getNativeSource(response);
-            source.request(Long.MAX_VALUE);
-            Buffer buffer = source.buffer();
-            Charset charset = UTF8;
-            MediaType contentType = responseBody.contentType();
-            if (contentType != null) {
-                try {
-                    charset = contentType.charset(UTF8);
-                } catch (UnsupportedCharsetException e) {
-                    update(transaction, transactionUri);
-                    return response;
+            transaction.setRequestHeaders(request.headers());
+            if (hasRequestBody) {
+                if (requestBody.contentType() != null) {
+                    transaction.setRequestContentType(requestBody.contentType().toString());
+                }
+                if (requestBody.contentLength() != -1) {
+                    transaction.setRequestContentLength(requestBody.contentLength());
                 }
             }
-            if (isPlaintext(buffer)) {
-                transaction.setResponseBody(readFromBuffer(buffer.clone(), charset));
-            } else {
-                transaction.setResponseBodyIsPlainText(false);
+
+            transaction.setRequestBodyIsPlainText(!bodyHasUnsupportedEncoding(request.headers()));
+            if (hasRequestBody && transaction.requestBodyIsPlainText()) {
+                BufferedSource source = getNativeSource(new Buffer(), bodyGzipped(request.headers()));
+                Buffer buffer = source.buffer();
+                requestBody.writeTo(buffer);
+                Charset charset = UTF8;
+                MediaType contentType = requestBody.contentType();
+                if (contentType != null) {
+                    charset = contentType.charset(UTF8);
+                }
+                if (isPlaintext(buffer)) {
+                    transaction.setRequestBody(readFromBuffer(buffer, charset));
+                } else {
+                    transaction.setResponseBodyIsPlainText(false);
+                }
             }
-            transaction.setResponseContentLength(buffer.size());
+
+            Uri transactionUri = create(transaction);
+
+            long startNs = System.nanoTime();
+            Response response;
+            try {
+                response = chain.proceed(request);
+            } catch (Exception e) {
+                transaction.setError(e.toString());
+                update(transaction, transactionUri);
+                throw e;
+            }
+            long tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs);
+
+            ResponseBody responseBody = response.body();
+
+            transaction.setRequestHeaders(response.request().headers()); // includes headers added later in the chain
+            transaction.setResponseDate(new Date());
+            transaction.setTookMs(tookMs);
+            transaction.setProtocol(response.protocol().toString());
+            transaction.setResponseCode(response.code());
+            transaction.setResponseMessage(response.message());
+
+            transaction.setResponseContentLength(responseBody.contentLength());
+            if (responseBody.contentType() != null) {
+                transaction.setResponseContentType(responseBody.contentType().toString());
+            }
+            transaction.setResponseHeaders(response.headers());
+
+            transaction.setResponseBodyIsPlainText(!bodyHasUnsupportedEncoding(response.headers()));
+            if (HttpHeaders.hasBody(response) && transaction.responseBodyIsPlainText()) {
+                BufferedSource source = getNativeSource(response);
+                source.request(Long.MAX_VALUE);
+                Buffer buffer = source.buffer();
+                Charset charset = UTF8;
+                MediaType contentType = responseBody.contentType();
+                if (contentType != null) {
+                    try {
+                        charset = contentType.charset(UTF8);
+                    } catch (UnsupportedCharsetException e) {
+                        update(transaction, transactionUri);
+                        return response;
+                    }
+                }
+                if (isPlaintext(buffer)) {
+                    transaction.setResponseBody(readFromBuffer(buffer.clone(), charset));
+                } else {
+                    transaction.setResponseBodyIsPlainText(false);
+                }
+                transaction.setResponseContentLength(buffer.size());
+            }
+
+            update(transaction, transactionUri);
+
+            return response;
+        } catch (Exception e){
+            return chain.proceed(request);
         }
-
-        update(transaction, transactionUri);
-
-        return response;
     }
 
     private Uri create(HttpTransaction transaction) {

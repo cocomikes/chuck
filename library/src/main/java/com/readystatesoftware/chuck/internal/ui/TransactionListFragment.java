@@ -113,7 +113,9 @@ public class TransactionListFragment extends Fragment implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.clear) {
-            getContext().getContentResolver().delete(ChuckContentProvider.TRANSACTION_URI, null, null);
+            if(ChuckContentProvider.TRANSACTION_URI != null){
+                getContext().getContentResolver().delete(ChuckContentProvider.TRANSACTION_URI, null, null);
+            }
             NotificationHelper.clearBuffer();
             return true;
         } else if (item.getItemId() == R.id.browse_sql) {
@@ -127,7 +129,9 @@ public class TransactionListFragment extends Fragment implements
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         CursorLoader loader = new CursorLoader(getContext());
-        loader.setUri(ChuckContentProvider.TRANSACTION_URI);
+        if(ChuckContentProvider.TRANSACTION_URI != null){
+            loader.setUri(ChuckContentProvider.TRANSACTION_URI);
+        }
         if (!TextUtils.isEmpty(currentFilter)) {
             if (TextUtils.isDigitsOnly(currentFilter)) {
                 loader.setSelection("responseCode LIKE ?");
