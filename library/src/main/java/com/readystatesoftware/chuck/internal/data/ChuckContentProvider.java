@@ -30,7 +30,7 @@ import androidx.annotation.Nullable;
 
 public class ChuckContentProvider extends ContentProvider {
 
-    public static Uri TRANSACTION_URI;
+    public static Uri TRANSACTION_URI = null;
 
     private static final int TRANSACTION = 0;
     private static final int TRANSACTIONS = 1;
@@ -94,7 +94,11 @@ public class ChuckContentProvider extends ContentProvider {
                 long id = db.insert(LocalCupboard.getInstance().getTable(HttpTransaction.class), null, contentValues);
                 if (id > 0) {
                     getContext().getContentResolver().notifyChange(uri, null);
-                    return ContentUris.withAppendedId(TRANSACTION_URI, id);
+                    if(TRANSACTION_URI != null){
+                        return ContentUris.withAppendedId(TRANSACTION_URI, id);
+                    } else{
+                        return null;
+                    }
                 }
         }
         return null;
