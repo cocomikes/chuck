@@ -1,9 +1,5 @@
 apply plugin: 'com.android.library'
 
-def versionMajor = 1
-def versionMinor = 3
-def versionPatch = 0
-
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -11,8 +7,8 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode versionMajor * 100 + versionMinor * 10 + versionPatch
-        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+        versionCode 130
+        versionName "1.3.0"
         consumerProguardFiles 'proguard-rules.pro'
     }
 
@@ -27,7 +23,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'com.google.android.material:material:1.4.0'
-    compileOnly('com.google.code.gson:gson:2.8.7')
+    compileOnly('com.google.code.gson:gson:2.8.9')
     compileOnly("com.squareup.okhttp3:okhttp:$okhttp3Version")
     api('nl.qbusict:cupboard:2.2.0')
 }
