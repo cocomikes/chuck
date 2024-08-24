@@ -1,0 +1,42 @@
+apply plugin: 'maven-publish'
+
+task androidSourcesJar(type: Jar) {
+    group = 'jar'
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+println("${project.name}=> groupId=${project.PUB_GROUP_ID}, artifactId=${project.PUB_ARTIFACT_ID}, version=${project.PUB_VERSION}")
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                artifact androidSourcesJar
+                from components.release
+                groupId project.PUB_GROUP_ID
+                artifactId project.PUB_ARTIFACT_ID
+                version project.PUB_VERSION
+            }
+        }
+        repositories {
+            // 发布到刀锋Maven
+            maven {
+                name = "dofun"
+                url = "http://192.168.29.27:8081/repository/dofun/"
+                allowInsecureProtocol(true)
+                credentials {
+                    username "admin"
+                    password "android"
+                }
+            }
+            maven {
+                name = "snapshots"
+                url = "http://192.168.29.27:8081/repository/maven-snapshots/"
+                allowInsecureProtocol(true)
+                credentials {
+                    username "admin"
+                    password "android"
+                }
+            }
+        }
+    }
+}

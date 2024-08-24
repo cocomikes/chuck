@@ -27,6 +27,8 @@ import com.readystatesoftware.chuck.internal.data.HttpTransaction;
 import com.readystatesoftware.chuck.internal.data.LocalCupboard;
 import com.readystatesoftware.chuck.internal.support.NotificationHelper;
 import com.readystatesoftware.chuck.internal.support.RetentionManager;
+import com.readystatesoftware.chuck.monitor.mock.MockHelper;
+import com.readystatesoftware.chuck.monitor.weaknetwork.WeakNetworkHelper;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -164,14 +166,50 @@ public final class ChuckInterceptor implements Interceptor {
                 transaction.setResponseBodyIsPlainText(false);
             }
         }
+//        //白名单模式
+//        if (!MockHelper.isWhiteHosts(transaction.getHost())) {
+//            return chain.proceed(request);
+//        }
+//        //黑名单模式
+//        if (MockHelper.isBlackHosts(transaction.getHost())) {
+//            return chain.proceed(request);
+//        }
+//        //IP过滤模式
+//        if (MonitorHelper.isFilterIPAddressHost && MockHelper.isIpAddress(transaction.getHost())) {
+//            return chain.proceed(request);
+//        }
 
         Uri transactionUri = create(transaction);
 
         long startNs = System.nanoTime();
         Response response;
         try {
-            response = chain.proceed(request);
-        } catch (Exception e) {
+            if (MockHelper.isMockByNetworkResponse(transaction.getPath())) {
+                response = MockHelper.buildMockServer(chain, request);
+            }
+            else if(MockHelper.isMockByCustomResponse(transaction.getPath())){
+                response = MockHelper.mockResponseBody(chain);
+            }
+            else if(WeakNetworkHelper.weakNetType() != null){
+                switch (WeakNetworkHelper.weakNetType()){
+                    case TIME_OUT:
+                        response = WeakNetworkHelper.mockTimeout(chain);
+                        break;
+                    case SPEED_LIMIT:
+                        response = WeakNetworkHelper.mockSpeedLimit(chain);
+                        break;
+                    case NO_NETWORK:
+                        response = WeakNetworkHelper.mockNoNetwork(chain);
+                        break;
+                    default:
+                        response = chain.proceed(request);
+                        break;
+                }
+            }
+            else{
+                response = chain.proceed(request);
+            }
+        } catch (IOException e) {
             transaction.setError(e.toString());
             update(transaction, transactionUri);
             throw e;

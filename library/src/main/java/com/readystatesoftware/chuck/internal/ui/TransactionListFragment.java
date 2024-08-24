@@ -16,6 +16,7 @@
 package com.readystatesoftware.chuck.internal.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -41,6 +42,7 @@ import com.readystatesoftware.chuck.internal.data.ChuckContentProvider;
 import com.readystatesoftware.chuck.internal.data.HttpTransaction;
 import com.readystatesoftware.chuck.internal.support.NotificationHelper;
 import com.readystatesoftware.chuck.internal.support.SQLiteUtils;
+import com.readystatesoftware.chuck.monitor.ui.MonitorConfigActivity;
 
 public class TransactionListFragment extends Fragment implements
         SearchView.OnQueryTextListener, LoaderManager.LoaderCallbacks<Cursor> {
@@ -112,7 +114,10 @@ public class TransactionListFragment extends Fragment implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.clear) {
+        if (item.getItemId() == R.id.config) {
+            startActivity(new Intent(getContext(), MonitorConfigActivity.class));
+            return true;
+        } else if (item.getItemId() == R.id.clear) {
             if(ChuckContentProvider.TRANSACTION_URI != null){
                 getContext().getContentResolver().delete(ChuckContentProvider.TRANSACTION_URI, null, null);
             }

@@ -127,10 +127,9 @@ public class NotificationHelper {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
             intent = PendingIntent.getService(context, 11, deleteIntent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
         } else{
-            intent = PendingIntent.getService(context, 11, deleteIntent, PendingIntent.FLAG_ONE_SHOT);
+            intent = PendingIntent.getService(context, 11, deleteIntent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
         }
-        return new NotificationCompat.Action(R.drawable.chuck_ic_delete_white_24dp,
-            clearTitle, intent);
+        return new NotificationCompat.Action(R.drawable.chuck_ic_delete_white_24dp, clearTitle, intent);
     }
 
     public void dismiss() {

@@ -52,7 +52,32 @@ public class HttpTransaction {
             "responseContentLength"
     };
 
-    private static final SimpleDateFormat TIME_ONLY_FMT = new SimpleDateFormat("HH:mm:ss", Locale.US);
+    public static final String[] PARTIAL_PROJECTION_MONITOR = new String[] {
+            "_id",
+            "requestDate",
+            "responseDate",
+            "tookMs",
+            "method",
+            "protocol",
+            "url",
+            "host",
+            "path",
+            "scheme",
+            "requestHeaders",
+            "requestBody",
+            "requestContentType",
+            "requestContentLength",
+            "responseCode",
+            "responseHeaders",
+            "responseMessage",
+            "responseBody",
+            "responseContentType",
+            "responseContentLength",
+            "error",
+    };
+
+    private static final SimpleDateFormat TIME_ONLY_FMT = new SimpleDateFormat("HH:mm:ss", Locale.CHINA);
+    private static final SimpleDateFormat TIME_ONLY_LONG = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS", Locale.CHINA);
 
     private Long _id;
     @Index private Date requestDate;
@@ -299,11 +324,11 @@ public class HttpTransaction {
     }
 
     public String getRequestDateString() {
-        return (requestDate != null) ? requestDate.toString() : null;
+        return (requestDate != null) ? TIME_ONLY_LONG.format(requestDate) : null;
     }
 
     public String getResponseDateString() {
-        return (responseDate != null) ? responseDate.toString() : null;
+        return (responseDate != null) ? TIME_ONLY_LONG.format(responseDate) : null;
     }
 
     public String getDurationString() {

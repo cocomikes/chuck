@@ -23,8 +23,9 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.readystatesoftware.chuck.R;
 import com.readystatesoftware.chuck.internal.data.HttpTransaction;
+import com.readystatesoftware.chuck.monitor.MonitorHelper;
 
-public class MainActivity extends BaseChuckActivity implements TransactionListFragment.OnListFragmentInteractionListener {
+public class ChuckMainActivity extends BaseChuckActivity implements TransactionListFragment.OnListFragmentInteractionListener {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,7 +33,10 @@ public class MainActivity extends BaseChuckActivity implements TransactionListFr
         setContentView(R.layout.chuck_activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setSubtitle(getApplicationName());
+        toolbar.setTitle(getString(R.string.chuck_name) + ":" + getApplicationName());
+        if(MonitorHelper.getPhoneWifiIpAddress() != null){
+            toolbar.setSubtitle(MonitorHelper.getPhoneWifiIpAddress() + ":" + MonitorHelper.port +"/index");
+        }
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, TransactionListFragment.newInstance())

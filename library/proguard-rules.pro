@@ -1,2 +1,3 @@
 -keep class com.readystatesoftware.chuck.internal.data.HttpTransaction { *; }
+-keep class com.readystatesoftware.chuck.monitor.** { *; }
 -keep class androidx.appcompat.widget.SearchView { *; }

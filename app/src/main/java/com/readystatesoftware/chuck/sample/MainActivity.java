@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.readystatesoftware.chuck.Chuck;
 import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.readystatesoftware.chuck.monitor.MonitorHelper;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -49,6 +50,12 @@ public class MainActivity extends AppCompatActivity {
                 launchChuckDirectly();
             }
         });
+        findViewById(R.id.btn_test).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MonitorHelper.INSTANCE.getMonitorDataById(50, "", 434);
+            }
+        });
     }
 
     private OkHttpClient getClient(Context context) {
@@ -65,11 +72,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void doHttpActivity() {
-        SampleApiService.HttpbinApi api = SampleApiService.getInstance(getClient(this));
+        SampleApiService.HttpbinApi api = SampleApiService.getInstance(getClient(this), "https://httpbin.org");
         Callback<Void> cb = new Callback<Void>() {
             @Override public void onResponse(Call call, Response response) {}
             @Override public void onFailure(Call call, Throwable t) { t.printStackTrace(); }
         };
+        SampleApiService.HttpbinApi dofunApi = SampleApiService.getInstance(getClient(this), "https://zhwapp.zuhaowan.com");
+        dofunApi.index520().enqueue(cb);
         api.get().enqueue(cb);
         api.post(new SampleApiService.Data("posted")).enqueue(cb);
         api.patch(new SampleApiService.Data("patched")).enqueue(cb);

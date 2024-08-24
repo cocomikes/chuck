@@ -22,16 +22,20 @@
             android:authorities="${applicationId}.chuck.provider"
             android:exported="false" />
         <activity
-            android:name=".internal.ui.MainActivity"
+            android:name=".internal.ui.ChuckMainActivity"
             android:label="@string/chuck_name"
             android:launchMode="singleTask"
             android:taskAffinity="com.readystatesoftware.chuck.task"
             android:theme="@style/Chuck.Theme" />
         <activity android:name=".internal.ui.TransactionActivity"
             android:theme="@style/Chuck.Theme"
-            android:parentActivityName=".internal.ui.MainActivity"/>
+            android:parentActivityName=".internal.ui.ChuckMainActivity"/>
         <service
             android:name=".internal.support.ClearTransactionsService"
             android:exported="false" />
+
+        <activity android:name=".monitor.ui.MonitorConfigActivity"
+            android:parentActivityName=".internal.ui.ChuckMainActivity"
+            android:theme="@style/Chuck.Theme"/>
     </application>
 </manifest>

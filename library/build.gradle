@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
 
@@ -17,21 +18,29 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    buildFeatures{
+        viewBinding = true
+    }
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${kotlinVersion}")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1")
     implementation 'androidx.viewpager:viewpager:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.5.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'com.google.android.material:material:1.6.1'
-    compileOnly('com.google.code.gson:gson:2.9.0')
+    implementation('com.google.code.gson:gson:2.9.0')
     compileOnly("com.squareup.okhttp3:okhttp:4.9.1")
     api('nl.qbusict:cupboard:2.2.0')
+    //monitor
+    def als_version = "0.0.1"
+    implementation "io.github.lygttpod.android-local-service:core:$als_version"
+    implementation "io.github.lygttpod.android-local-service:annotation:$als_version"
+    kapt "io.github.lygttpod.android-local-service:processor:$als_version"
 }
 
-//ext {
-//    ARTIFACT_ID = 'chuck-library' //项目名称
-//    PUBLISH_VERSION = android.defaultConfig.versionName//版本号
-//}
-//apply from: "../mavenCentral-upload.gradle"
+ext.PUB_GROUP_ID = "com.github.cocomikes.chuck"
+ext.PUB_ARTIFACT_ID = 'library'
+ext.PUB_VERSION = '1.5.0-rc1'
+apply from: rootProject.file('maven-publishing.gradle')

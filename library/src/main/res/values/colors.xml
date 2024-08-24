@@ -25,4 +25,15 @@
     <color name="chuck_status_500">#B71C1C</color>
     <color name="chuck_status_400">#FF9800</color>
     <color name="chuck_status_300">#0D47A1</color>
+
+    <color name="monitor_status_success">@color/chuck_status_default</color>
+    <color name="monitor_status_requested">@color/chuck_status_requested</color>
+    <color name="monitor_status_error">@color/chuck_status_error</color>
+    <color name="monitor_status_300">@color/chuck_status_300</color>
+    <color name="monitor_status_400">@color/chuck_status_400</color>
+    <color name="monitor_status_500">@color/chuck_status_500</color>
+
+    <color name="monitor_white">#ffffff</color>
+    <color name="monitor_block">#000000</color>
+    <color name="monitor_block_color">#22aaaaaa</color>
 </resources>

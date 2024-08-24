@@ -15,7 +15,7 @@
  ~ limitations under the License.
  -->
 <resources>
-    <string name="chuck_name">Chuck</string>
+    <string name="chuck_name">抓包助手</string>
     <string name="chuck_notification_title">Recording HTTP activity</string>
     <string name="chuck_clear">Clear</string>
     <string name="chuck_browse_sql_database">Browse SQLite database</string>
@@ -43,4 +43,5 @@
     <string name="chuck_body_unexpected_eof">\n\n--- Unexpected end of content ---</string>
     <string name="chuck_body_content_truncated">\n\n--- Content truncated ---</string>
     <string name="notification_category">Chuck HTTP notifications</string>
+    <string name="monitor_config">Config</string>
 </resources>

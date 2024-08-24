@@ -23,6 +23,7 @@ import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -31,9 +32,9 @@ import retrofit2.http.Query;
 
 class SampleApiService {
 
-    static HttpbinApi getInstance(OkHttpClient client) {
+    static HttpbinApi getInstance(OkHttpClient client, String url) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://httpbin.org")
+                .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
@@ -48,6 +49,9 @@ class SampleApiService {
     }
 
     interface HttpbinApi {
+        @Headers({"auth:Xxxxx"})
+        @GET("/Appv3/main/index520")
+        Call<Void> index520();
         @GET("/get")
         Call<Void> get();
         @POST("/post")
