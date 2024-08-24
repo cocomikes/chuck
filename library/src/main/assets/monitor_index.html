@@ -245,7 +245,7 @@
          */
         function createTitleDiv(data, collapseId, position, isShowIndex) {
             var titleDiv = '<div class="panel-heading">';
-            titleDiv += '<a data-toggle="collapse" data-parent="#root_list_div" href=#';
+            titleDiv += '<a class="a_wrap_line" data-toggle="collapse" data-parent="#root_list_div" href=#';
             titleDiv += collapseId + '>';
             if (isShowIndex) {
                 titleDiv += parseInt(position) + 1 + "、";
@@ -276,7 +276,7 @@
          */
          function createRequestOverview(data) {
             if (isEmpty(data.url)) return "";
-            var info = '<div class="well">';
+            var info = '<div class="well wrap_line">';
             info += '<b>' + "URL: " + '</b>' + data.url + '<br />';
             info += '<b>' + "METHOD: " + '</b>'  + data.method + '<br />';
             info += '<b>' + "Protocol: " + '</b>'  + data.protocol + '<br />';
@@ -295,7 +295,7 @@
          * 请求头 & 请求体
          */
         function createRequestTable(data, id){
-            var info = '<div class="well">';
+            var info = '<div class="well wrap_line">';
             info += '<b>Request</b><br /><br />';
             // 请求头
             if (isNotEmpty(data.requestHeaders) && isJSON(data.requestHeaders)) {
@@ -332,7 +332,7 @@
          * 响应头 & 响应数据
          */
         function createResponseTable(data, id){
-            var info = '<div class="well">';
+            var info = '<div class="well wrap_line">';
             info += '<b>Response</b><br /><br />';
             info += '<div>';
             // 响应头
@@ -589,7 +589,14 @@
             align-items: center;
         }
 
+        .wrap_line {
+            white-space: pre-line;
+        }
 
+        .a_wrap_line {
+            word-break: break-all;
+            word-wrap: break-word;
+        }
     </style>
 </head>
 <body>
