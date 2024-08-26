@@ -30,6 +30,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.readystatesoftware.chuck.BuildConfig;
 import com.readystatesoftware.chuck.monitor.MonitorHelper;
 
 import java.util.Arrays;
@@ -66,7 +67,9 @@ public class ChuckContentProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection,
                         @Nullable String selection, @Nullable String[] selectionArgs,
                         @Nullable String sortOrder) {
-        Log.e("Chuck", "query uri:" + uri + ", selection:"+selection+", selectionArgs:" + Arrays.toString(selectionArgs) + ", sortOrder:" + sortOrder);
+        if(BuildConfig.DEBUG){
+            Log.d("Chuck", "query uri:" + uri + ", selection:"+selection+", selectionArgs:" + Arrays.toString(selectionArgs) + ", sortOrder:" + sortOrder);
+        }
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         Cursor cursor = null;
         switch (matcher.match(uri)) {

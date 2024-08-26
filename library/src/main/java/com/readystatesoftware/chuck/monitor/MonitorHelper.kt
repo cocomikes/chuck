@@ -99,10 +99,10 @@ object MonitorHelper {
             if (!TextUtils.isEmpty(filter)) {
                 if (TextUtils.isDigitsOnly(filter)) {
                     selection.append("responseCode LIKE ?")
-                    selectionArgs.add(filter)
+                    selectionArgs.add("$filter%")
                 } else {
                     selection.append("path LIKE ?")
-                    selectionArgs.add(filter)
+                    selectionArgs.add("%$filter%")
                 }
             }
             if(fetchId != null && fetchId > 0){
