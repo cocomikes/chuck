@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.readystatesoftware.chuck.internal.ui.ChuckMainActivity;
+import com.readystatesoftware.chuck.monitor.MonitorHelper;
 
 /**
  * Chuck utilities.
@@ -33,5 +34,12 @@ public class Chuck {
      */
     public static Intent getLaunchIntent(Context context) {
         return new Intent(context, ChuckMainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    }
+
+    public static String getWifiIpPort(){
+        if(MonitorHelper.getPhoneWifiIpAddress() != null){
+           return MonitorHelper.getPhoneWifiIpAddress() + ":" + MonitorHelper.port +"/index";
+        }
+        return "";
     }
 }

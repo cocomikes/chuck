@@ -21,6 +21,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
+import com.readystatesoftware.chuck.Chuck;
 import com.readystatesoftware.chuck.R;
 import com.readystatesoftware.chuck.internal.data.HttpTransaction;
 import com.readystatesoftware.chuck.monitor.MonitorHelper;
@@ -34,9 +35,7 @@ public class ChuckMainActivity extends BaseChuckActivity implements TransactionL
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getString(R.string.chuck_name) + ":" + getApplicationName());
-        if(MonitorHelper.getPhoneWifiIpAddress() != null){
-            toolbar.setSubtitle(MonitorHelper.getPhoneWifiIpAddress() + ":" + MonitorHelper.port +"/index");
-        }
+        toolbar.setSubtitle(Chuck.getWifiIpPort());
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, TransactionListFragment.newInstance())

@@ -26,4 +26,8 @@ public class Chuck {
     public static Intent getLaunchIntent(Context context) {
         return new Intent();
     }
+
+    public static String getWifiIpPort(){
+        return "X:X/index";
+    }
 }
