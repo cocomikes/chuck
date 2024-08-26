@@ -90,7 +90,7 @@ public final class ChuckInterceptor implements Interceptor {
     public ChuckInterceptor(Context context) {
         this.context = context.getApplicationContext();
         notificationHelper = new NotificationHelper(this.context);
-        showNotification = true;
+        showNotification = false;
         retentionManager = new RetentionManager(this.context, DEFAULT_RETENTION);
     }
 
