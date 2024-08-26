@@ -26,7 +26,7 @@
                 if (isEmpty(filter)) {
                     filter = ''
                 }
-                $.get("/query?limit="+limit+"&offset=0"+"&filter="+filter, function (result) {
+                $.get("/query?limit="+limit+"&offset=0"+"&filter="+filter+"&fetchId="+lastFetchId, function (result) {
                     console.log(result)
                     if (result == undefined || result.length <= 0 || result == "[]") {
                         emptyView();

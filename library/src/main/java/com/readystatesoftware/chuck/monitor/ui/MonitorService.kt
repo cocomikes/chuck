@@ -21,8 +21,13 @@ abstract class MonitorService {
 //    fun showMqttPage() = "mqtt_index.html"
 
     @Get("query")
-    fun queryMonitorData(limit: Int, offset: Int, filter: String): MutableList<HttpTransaction> {
-        return MonitorHelper.getMonitorDataList(limit, offset, filter)
+    fun queryMonitorData(limit: Int, offset: Int, filter: String, fetchId : Long): MutableList<HttpTransaction> {
+        //第一次加载时不限制条数
+        return if(fetchId == 0L){
+            MonitorHelper.getMonitorDataList(limit = 0, offset, filter)
+        } else{
+            MonitorHelper.getMonitorDataList(limit, offset, filter)
+        }
     }
 
     @Get("clean")
