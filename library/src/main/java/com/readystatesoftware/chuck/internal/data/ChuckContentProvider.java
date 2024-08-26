@@ -24,9 +24,17 @@ import android.content.pm.ProviderInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.readystatesoftware.chuck.monitor.MonitorHelper;
+
+import java.util.Arrays;
+
+import nl.qbusict.cupboard.DatabaseCompartment;
 
 public class ChuckContentProvider extends ContentProvider {
 
@@ -49,6 +57,7 @@ public class ChuckContentProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         databaseHelper = new ChuckDbOpenHelper(getContext());
+        MonitorHelper.init(getContext());
         return true;
     }
 
@@ -57,15 +66,22 @@ public class ChuckContentProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection,
                         @Nullable String selection, @Nullable String[] selectionArgs,
                         @Nullable String sortOrder) {
+        Log.e("Chuck", "query uri:" + uri + ", selection:"+selection+", selectionArgs:" + Arrays.toString(selectionArgs) + ", sortOrder:" + sortOrder);
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         Cursor cursor = null;
         switch (matcher.match(uri)) {
             case TRANSACTIONS:
-                cursor = LocalCupboard.getInstance().withDatabase(db).query(HttpTransaction.class).
-                        withProjection(projection).
-                        withSelection(selection, selectionArgs).
-                        orderBy(sortOrder).
-                        getCursor();
+                DatabaseCompartment.QueryBuilder<HttpTransaction> queryBuilder = LocalCupboard.getInstance().withDatabase(db).query(HttpTransaction.class)
+                        .withProjection(projection)
+                        .withSelection(selection, selectionArgs)
+                        .orderBy(sortOrder);
+                if(!TextUtils.isEmpty(uri.getQueryParameter("limit"))){
+                    queryBuilder.limit(Integer.parseInt(uri.getQueryParameter("limit")));
+                }
+                if(!TextUtils.isEmpty(uri.getQueryParameter("offset"))){
+                    queryBuilder.offset(Integer.parseInt(uri.getQueryParameter("offset")));
+                }
+                cursor = queryBuilder.getCursor();
                 break;
             case TRANSACTION:
                 cursor = LocalCupboard.getInstance().withDatabase(db).query(HttpTransaction.class).
