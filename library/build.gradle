@@ -42,5 +42,5 @@ dependencies {
 
 ext.PUB_GROUP_ID = "com.github.cocomikes.chuck"
 ext.PUB_ARTIFACT_ID = 'library'
-ext.PUB_VERSION = '1.5.0-rc3'
+ext.PUB_VERSION = '1.5.0'
 apply from: rootProject.file('maven-publishing.gradle')
