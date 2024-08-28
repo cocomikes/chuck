@@ -22,14 +22,7 @@ abstract class MonitorService {
 
     @Get("query")
     fun queryMonitorData(limit: Int, offset: Int, filter: String, fetchId : Long): MutableList<HttpTransaction> {
-        //第一次加载时限制最大条数: 200
-        return if(fetchId == 0L){
-            MonitorHelper.getMonitorDataList(limit = 200, offset, filter)
-        } else if(filter.isNotEmpty()){
-            MonitorHelper.getMonitorDataList(limit = 200, offset, filter)
-        } else{
-            MonitorHelper.getMonitorDataList(limit, offset, filter)
-        }
+        return MonitorHelper.getMonitorDataList(limit, offset, filter)
     }
 
     @Get("clean")
