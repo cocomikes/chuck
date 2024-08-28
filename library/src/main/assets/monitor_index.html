@@ -21,8 +21,8 @@
                 resetCheckboxStatus();
                 var limit = $("#limit").val();
                 if (isEmpty(limit)) {
-                    limit = 200;
-                    $("#limit").attr('value', '200');
+                    limit = 50;
+                    $("#limit").attr('value', '50');
                 }
                 var filter = $("#filter").val();
                 if (isEmpty(filter)) {
@@ -629,7 +629,7 @@
         <div class="center_container"
              style="margin: 10px 10px 10px 10px;display: flex;height: 60px;">
              <div class="input-limit">
-                <input type="number" class="form-control" id="limit" min="0" placeholder="默认200条;0不限制;">
+                <input type="number" class="form-control" id="limit" min="0" placeholder="默认50条;0不限制;">
             </div>
             <div class="input-group" style="margin-left: 20px">
                 <input type="text" class="form-control" id="filter" placeholder="搜索">
