@@ -394,7 +394,7 @@
                         createErrorJsonViewAfterHtmlAppend(item, previewId);
                     }
                 } else{
-                    $("#" + previewId).append(item.responseBody)
+                    $("#" + previewId).append('<b>'+ item.responseBody + '</b>')
                 }
             } else {
                 createErrorJsonViewAfterHtmlAppend(item, previewId);
@@ -405,7 +405,7 @@
             var errorMessage = item.error;
             if (isEmpty(errorMessage)) {
                 errorMessage = item.responseMessage;
-            }
+            }   
             $("#" + previewId).append(errorMessage);
         }
 
