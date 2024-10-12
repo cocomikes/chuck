@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         SampleApiService.HttpbinApi dofunApi = SampleApiService.getInstance(getClient(this), "https://zhwapp.zuhaowan.com");
         dofunApi.index520().enqueue(cb);
         api.get().enqueue(cb);
+        api.postForm("" + System.currentTimeMillis() / 1000, "1").enqueue(cb);
         api.post(new SampleApiService.Data("posted")).enqueue(cb);
         api.patch(new SampleApiService.Data("patched")).enqueue(cb);
         api.put(new SampleApiService.Data("put")).enqueue(cb);

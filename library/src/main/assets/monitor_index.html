@@ -205,6 +205,11 @@
             createResponseBodyPreviewAfterHtmlAppend(item, previewId);
             $("#filter").attr('placeholder', '搜索('+document.getElementById('root_list_div').children.length+')条');
 
+            var previewParamsContentDiv = document.getElementById("preview_params_content" + collapseId);
+            if(previewParamsContentDiv != null){
+                previewParamsContentDiv.textContent = item.requestBody || '';
+            }
+
             var copyBtnId = "copy_btn" + collapseId;
             var copyResponseContentId = "copy_response_content" + collapseId;
             var copyBtn = document.getElementById(copyBtnId);
@@ -217,7 +222,19 @@
             var copyParamsBtnId = "copy_params_btn" + collapseId;
             var copyParamsContentId = "copy_params_content" + collapseId;
             var copyParamsBtn = document.getElementById(copyParamsBtnId);
+            var copyParamsContentTextArea = document.getElementById(copyParamsContentId);
             if (copyParamsBtn != null) {
+                if(isNotEmpty(item.requestContentType)){
+                    if(typeof item.requestContentType == 'string' && item.requestContentType.toLowerCase().includes('json')){
+                        copyParamsContentTextArea.textContent = JSON.stringify(item.requestBody || '{}');
+                    } else if(typeof item.requestContentType == 'string' && item.requestContentType.toLowerCase().includes('xml')){
+                        copyParamsContentTextArea.textContent = item.requestBody || '';
+                    } else{
+                        copyParamsContentTextArea.textContent = item.requestBody || '';
+                    }
+                } else{
+                    copyParamsContentTextArea.textContent = item.requestBody || '';
+                }
                 copyParamsBtn.addEventListener("click", function () {
                     copyData(copyParamsBtnId, copyParamsContentId, "请求参数：");
                 });
@@ -301,33 +318,34 @@
         function createRequestTable(data, id){
             var info = '<div class="well wrap_line">';
             info += '<b>Request</b><br /><br />';
-            // 请求头
-            if (isNotEmpty(data.requestHeaders) && isJSON(data.requestHeaders)) {
-                var headerObj = JSON.parse(data.requestHeaders);
-                if (headerObj.length > 0){
-                    for (let index = 0; index < headerObj.length; index++) {
-                        var headName = headerObj[index].name;
-                        var headValue = headerObj[index].value;
-                        info += '<b>' + headName + ': ' + '</b>' + headValue + '<br />';
-                    }
-                    info += '<br />';
-                }
-            }
-            // 请求体
-            var requestBody = data.requestBody;
-            if(isNotEmpty(requestBody)){
-                if(isNotEmpty(data.requestContentType)){
-                    if(typeof data.requestContentType == 'string' && data.requestContentType.toLowerCase().includes('json')){
-                        info += JSON.stringify(data.requestBody) + '<br />'
-                    } else if(typeof data.requestContentType == 'string' && data.requestContentType.toLowerCase().includes('xml')){
-                        info += data.requestBody + '<br />'
-                    } else{
-                        info += data.requestBody + '<br />'
-                    }
-                } else{
-                    info += data.requestBody + '<br />'
-                }
-            }
+              // 请求头
+              info += '<div>';
+              if (isNotEmpty(data.requestHeaders) && isJSON(data.requestHeaders)) {
+                  var headerObj = JSON.parse(data.requestHeaders);
+                  if (headerObj.length > 0){
+                      for (let index = 0; index < headerObj.length; index++) {
+                          var headName = headerObj[index].name;
+                          var headValue = headerObj[index].value;
+                          info += '<b>' + headName + ': ' + '</b>' + headValue + '<br />';
+                      }
+                      info += '<br />';
+                  }
+              }
+              info += '</div>';
+              // 请求体
+              var requestBody = data.requestBody;
+              info += '<div id=';
+              info += "preview_params_content" + id + '>';
+              info += '</div>';
+              info += '<br />';
+              info += '<div class="copy_class well">';
+              info += '<div id=';
+              info += "copy_params_btn" + id + '>';
+              info += "复制文本" + '</div>';
+              info += '<textarea class="copy_textarea"  id=';
+              info += "copy_params_content" + id + '>';
+              info += '</textarea>';
+              info += '</div>';
             info += '</div>';
             return info;
         }
@@ -360,7 +378,7 @@
             info += "复制文本" + '</div>';
             info += '<textarea class="copy_textarea"  id=';
             info += "copy_response_content" + id + '>';
-            info += responseBody;
+            info += (responseBody || '');
             info += '</textarea>';
             info += '</div>';
             info += '</div>';
@@ -470,7 +488,7 @@
 
             span += spanStyle + data.responseCode + '</span>';
             span += spanStyle + data.host + '</span>';
-            span += spanStyle + formatRequestDate(data.requestDate) + '</span>';
+            span += spanStyle + formatDate(data.requestDate) + '</span>';
             span += spanStyle + data.method + '</span>';
             var duration;
             if (data.tookMs != undefined) {
@@ -495,7 +513,19 @@
             return sizeString;
         }
 
-        function formatRequestDate(date) {
+        function formatDate(date) {
+            // const formatter = new Intl.DateTimeFormat('en-US', {
+            //     year: 'numeric',
+            //     month: '2-digit',
+            //     day: '2-digit',
+            //     hour: '2-digit',
+            //     minute: '2-digit',
+            //     second: '2-digit',
+            //     fractionalSecond: '3-digit', // 包含毫秒
+            //     hour12: false, // 使用24小时制
+            // });
+
+            // return formatter.format(new Date(date));
             return new Date(date).toLocaleTimeString('zh-CN',{
                 hour12: false,
                 hour: '2-digit',
@@ -589,8 +619,8 @@
         }
 
         .copy_textarea {
-            width: 10px;
-            height: 10px;
+            width: 100px;
+            height: 50px;
         }
 
         .copy_class {

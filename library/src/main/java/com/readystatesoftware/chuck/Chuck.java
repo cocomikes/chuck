@@ -25,7 +25,7 @@ import com.readystatesoftware.chuck.monitor.MonitorHelper;
  * Chuck utilities.
  */
 public class Chuck {
-
+    static String mChuckNotification=null;
     /**
      * Get an Intent to launch the Chuck UI directly.
      *
@@ -41,5 +41,9 @@ public class Chuck {
            return MonitorHelper.getPhoneWifiIpAddress() + ":" + MonitorHelper.port +"/index";
         }
         return "";
+    }
+
+    public static void setShowNotification(boolean showNotification){
+        mChuckNotification = showNotification ? "1" : null;
     }
 }

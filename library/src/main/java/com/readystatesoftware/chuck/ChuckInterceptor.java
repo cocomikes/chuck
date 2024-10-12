@@ -105,6 +105,10 @@ public final class ChuckInterceptor implements Interceptor {
         return this;
     }
 
+    private boolean isShowNotification(){
+        return Chuck.mChuckNotification != null ? "1".equals(Chuck.mChuckNotification) : showNotification;
+    }
+
     /**
      * Set the maximum length for request and response content before it is truncated.
      * Warning: setting this value too high may cause unexpected results.
@@ -265,7 +269,7 @@ public final class ChuckInterceptor implements Interceptor {
                 ContentValues values = LocalCupboard.getInstance().withEntity(HttpTransaction.class).toContentValues(transaction);
                 Uri uri = context.getContentResolver().insert(ChuckContentProvider.TRANSACTION_URI, values);
                 transaction.setId(Long.valueOf(uri.getLastPathSegment()));
-                if (showNotification) {
+                if (isShowNotification()) {
                     notificationHelper.show(transaction);
                 }
                 retentionManager.doMaintenance();
@@ -282,7 +286,7 @@ public final class ChuckInterceptor implements Interceptor {
         if(uri != null){
             ContentValues values = LocalCupboard.getInstance().withEntity(HttpTransaction.class).toContentValues(transaction);
             int updated = context.getContentResolver().update(uri, values, null, null);
-            if (showNotification && updated > 0) {
+            if (isShowNotification() && updated > 0) {
                 notificationHelper.show(transaction);
             }
             return updated;

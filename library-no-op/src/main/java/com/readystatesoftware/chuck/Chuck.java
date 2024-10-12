@@ -30,4 +30,7 @@ public class Chuck {
     public static String getWifiIpPort(){
         return "X:X/index";
     }
+
+    public static void setShowNotification(boolean showNotification){
+    }
 }

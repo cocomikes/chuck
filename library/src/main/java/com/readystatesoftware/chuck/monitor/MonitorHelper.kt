@@ -10,6 +10,7 @@ import androidx.core.content.ContentResolverCompat
 import androidx.loader.content.CursorLoader
 import com.android.local.service.core.ALSHelper
 import com.android.local.service.core.data.ServiceConfig
+import com.readystatesoftware.chuck.Chuck
 import com.readystatesoftware.chuck.internal.data.ChuckContentProvider
 import com.readystatesoftware.chuck.internal.data.HttpTransaction
 import com.readystatesoftware.chuck.internal.data.LocalCupboard
@@ -130,6 +131,7 @@ object MonitorHelper {
         ALSHelper.init(context)
         ALSHelper.startService(if (port > 0) ServiceConfig(MonitorService::class.java, port) else ServiceConfig(MonitorService::class.java))
         MonitorHelper.port = ALSHelper.serviceList.firstOrNull()?.port ?: 0
+        Log.i("Chuck", "http monitor started. look at ${Chuck.getWifiIpPort()}")
     }
 
     fun deleteAll() {

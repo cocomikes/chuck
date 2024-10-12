@@ -76,8 +76,8 @@ public class HttpTransaction {
             "error",
     };
 
-    private static final SimpleDateFormat TIME_ONLY_FMT = new SimpleDateFormat("HH:mm:ss", Locale.CHINA);
-    private static final SimpleDateFormat TIME_ONLY_LONG = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS", Locale.CHINA);
+    private static final SimpleDateFormat TIME_ONLY_FMT = new SimpleDateFormat("HH:mm:ss.SSS", Locale.US);
+    private static final SimpleDateFormat TIME_ONLY_LONG = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US);
 
     private Long _id;
     @Index private Date requestDate;
