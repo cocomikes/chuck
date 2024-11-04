@@ -326,7 +326,11 @@
                       for (let index = 0; index < headerObj.length; index++) {
                           var headName = headerObj[index].name;
                           var headValue = headerObj[index].value;
-                          info += '<b>' + headName + ': ' + '</b>' + headValue + '<br />';
+                          if(headName == 'Access-Transport-Release'){
+                            info += '<b>' + headName + ': ' + '</b>' + headValue + '  =>  ' + atob(headValue) + '<br />';
+                          } else{
+                            info += '<b>' + headName + ': ' + '</b>' + headValue + '<br />';
+                          }
                       }
                       info += '<br />';
                   }
@@ -495,8 +499,20 @@
                 duration = data.tookMs;
                 span += spanStyle + duration + " ms" + '</span>';
             }
-
             span += spanStyle + formatBytes(data.responseContentLength) + '</span>';
+            if (isNotEmpty(data.requestHeaders) && isJSON(data.requestHeaders)) {
+                var headerObj = JSON.parse(data.requestHeaders);
+                  if (headerObj.length > 0){
+                      for (let index = 0; index < headerObj.length; index++) {
+                          var headName = headerObj[index].name;
+                          var headValue = headerObj[index].value;
+                          if(headName == 'Access-Transport-Release'){
+                              span += '<span class="label label-warning">' + '加密' + '</span>';
+                              break;
+                          }
+                      }
+                  }
+            }
             return span;
         }
 
